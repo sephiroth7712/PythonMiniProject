@@ -4,8 +4,8 @@ import random
 
 pygame.init()
 
-display_width=800
-display_height=600
+display_width=1280
+display_height=720
 
 black=(0,0,0)
 white=(255,255,255)
@@ -22,10 +22,44 @@ clock=pygame.time.Clock()
 
 CarImg=pygame.image.load("Racecar.png")
 
+def get_high_score():
+    # Default high score
+    high_score = 0
+
+    # Try to read the high score from a file
+    try:
+        high_score_file = open("high_score.txt", "r")
+        high_score = int(high_score_file.read())
+        high_score_file.close()
+        print("The high score is", high_score)
+    except IOError:
+        # Error reading file, no high score
+        print("There is no high score yet.")
+    except ValueError:
+        # There's a file there, but we don't understand the number.
+        print("I'm confused. Starting with no high score.")
+
+    return high_score
+
+def save_high_score(new_high_score):
+    try:
+        # Write the file to disk
+        high_score_file = open("high_score.txt", "w")
+        high_score_file.write(str(new_high_score))
+        high_score_file.close()
+    except IOError:
+        # Hm, can't write it.
+        print("Unable to save the high score.")
+
 def things_dodged(count):
+    high_score = get_high_score()
     font=pygame.font.SysFont(None,40)
     text=font.render("Score "+str(count),True,black)
+    if count > high_score:
+        save_high_score(count)
+    highScore=font.render("High Score "+str(high_score),True,black)
     gameDisplay.blit(text,(20,20))
+    gameDisplay.blit(highScore,(20,50))
 
 def car1(x,y):
     gameDisplay.blit(CarImg,(x,y))
@@ -55,8 +89,14 @@ def message_display(text):
 
     game_loop()
 
-def crash():
-    message_display('You Crashed')
+def crash1():
+    message_display('PLayer 1 Crashed')
+
+def crash2():
+    message_display('PLayer 2 Crashed')
+
+def crash3():
+    message_display('Collision')
 
 def game_loop():
     y_change=0
@@ -145,26 +185,34 @@ def game_loop():
         things_dodged(dodged)
 
         if x>display_width-car_width or x<0:
-            crash()
+            crash1()
         if x2>display_width-car_width or x2<0:
-            crash()
+            crash2()
 
         if thing_starty>display_height:
             thing_starty=0-thing_height
-            thing_startx=random.randrange(0,display_width)
+            thing_startx=random.randrange(0,1)
             dodged+=1
-            if thing_speed<15:
-                thing_speed+=0.25
+            if thing_speed<25:
+                thing_speed+=0.5
+
+        if ((x+car_width>x2 and x<x2+car_width) and (y-125<y2 and y>y2-125)):
+            print('collide')
+            crash3()
 
         if y<thing_starty+thing_height:
             print('y crossover')
 
             if ((x>thing_startx and x<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)) or ((x+car_width>thing_startx and x+car_width<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)):
-                print('x crossover')
-                crash()
-            elif ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
-                print('x crossover')
-                crash()
+                print('x1 crossover')
+                crash1()
+
+        if y2<thing_starty+thing_height:
+            print('y2 crossover')
+
+            if ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
+                print('x2 crossover')
+                crash2()
 
         pygame.display.update()
         clock.tick(60)
