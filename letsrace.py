@@ -4,8 +4,8 @@ import random
 
 pygame.init()
 
-display_width=1280
-display_height=720
+display_width=800
+display_height=600
 
 black=(0,0,0)
 white=(255,255,255)
@@ -89,14 +89,8 @@ def message_display(text):
 
     game_loop()
 
-def crash1():
-    message_display('PLayer 1 Crashed')
-
-def crash2():
-    message_display('PLayer 2 Crashed')
-
-def crash3():
-    message_display('Collision')
+def crash():
+    message_display('You Crashed')
 
 def game_loop():
     y_change=0
@@ -185,34 +179,26 @@ def game_loop():
         things_dodged(dodged)
 
         if x>display_width-car_width or x<0:
-            crash1()
+            crash()
         if x2>display_width-car_width or x2<0:
-            crash2()
+            crash()
 
         if thing_starty>display_height:
             thing_starty=0-thing_height
             thing_startx=random.randrange(0,display_width)
             dodged+=1
-            if thing_speed<25:
-                thing_speed+=0.5
-
-        if ((x+car_width>x2 and x<x2+car_width) and (y-125<y2 and y>y2-125)):
-            print('collide')
-            crash3()
+            if thing_speed<15:
+                thing_speed+=0.25
 
         if y<thing_starty+thing_height:
             print('y crossover')
 
             if ((x>thing_startx and x<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)) or ((x+car_width>thing_startx and x+car_width<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)):
-                print('x1 crossover')
-                crash1()
-
-        if y2<thing_starty+thing_height:
-            print('y2 crossover')
-
-            if ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
-                print('x2 crossover')
-                crash2()
+                print('x crossover')
+                crash()
+            elif ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
+                print('x crossover')
+                crash()
 
         pygame.display.update()
         clock.tick(60)
