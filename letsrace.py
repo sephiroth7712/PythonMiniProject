@@ -27,8 +27,12 @@ def things_dodged(count):
     text=font.render("Score "+str(count),True,black)
     gameDisplay.blit(text,(20,20))
 
-def car(x,y):
+def car1(x,y):
     gameDisplay.blit(CarImg,(x,y))
+
+def car2(x,y):
+    gameDisplay.blit(CarImg,(x,y))
+
 
 def things(thingx,thingy,thingw,thingh,color):
     color=brown
@@ -56,12 +60,18 @@ def crash():
 
 def game_loop():
     y_change=0
-    x=(display_width*0.48)
+    y2_change=0
+
+    x=(display_width*0.48/2)
     y=(display_height*0.79)
 
-    x_change=0
+    x2=(display_width*0.48*1.5)
+    y2=(display_height*0.79)
 
-    thing_startx=random.randrange(0,display_width-100)
+    x_change=0
+    x2_change=0
+
+    thing_startx=random.randrange(0,display_width)
     thing_starty=-600
     thing_speed=9
     thing_width=100
@@ -79,39 +89,66 @@ def game_loop():
                 quit()
 
             if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_LEFT:
+                if event.key==pygame.K_a:
                     x_change=-8
                     y_change=0
-                elif event.key==pygame.K_RIGHT:
+                elif event.key==pygame.K_d:
                     x_change=8
                     y_change=0
-                elif event.key==pygame.K_UP:
+                elif event.key==pygame.K_w:
                     x_change=0
                     y_change=-8
-                elif event.key==pygame.K_DOWN:
+                elif event.key==pygame.K_s:
                     x_change=-0
                     y_change=8
+                if event.key==pygame.K_LEFT:
+                    x2_change=-8
+                    y2_change=0
+                elif event.key==pygame.K_RIGHT:
+                    x2_change=8
+                    y2_change=0
+                elif event.key==pygame.K_UP:
+                    x2_change=0
+                    y2_change=-8
+                elif event.key==pygame.K_DOWN:
+                    x2_change=-0
+                    y2_change=8
 
             if event.type==pygame.KEYUP:
-                if event.key==pygame.K_LEFT or event.key==pygame.K_RIGHT or event.key==pygame.K_DOWN or event.key==pygame.K_UP:
+                if event.key==pygame.K_d or event.key==pygame.K_a or event.key==pygame.K_s or event.key==pygame.K_w or event.key==pygame.K_LEFT or event.key==pygame.K_RIGHT or event.key==pygame.K_UP or event.key==pygame.K_DOWN:
                     x_change=0
                     y_change=0
+                    x2_change=0
+                    y2_change=0
 
         x+=x_change
         if y+y_change>=display_height*0.79:
             y_change=0
+        elif y+y_change<=0:
+        	y_change=0
         y+=y_change
+
+        x2+=x2_change
+        if y2+y2_change>=display_height*0.79:
+            y2_change=0
+        elif y2+y2_change<=0:
+        	y2_change=0
+        y2+=y2_change
 
         gameDisplay.fill(white)
 
         #things(thingx,thingy,thingw,thingh,color)
         things(thing_startx,thing_starty,thing_width,thing_height,black)
         thing_starty+=thing_speed
-        car(x,y)
+        car1(x,y)
+        car2(x2,y2)
         things_dodged(dodged)
 
         if x>display_width-car_width or x<0:
             crash()
+        if x2>display_width-car_width or x2<0:
+            crash()
+
         if thing_starty>display_height:
             thing_starty=0-thing_height
             thing_startx=random.randrange(0,display_width)
