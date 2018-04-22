@@ -6,12 +6,12 @@ A racing game which uses the module pygame
 + [Playing the game](#running)
 
 ## Installation<a name="installation"></a>
-Run these commands in your terminal- 
+#### Cloning the project
 ```
 	$ git clone https://github.com/sephiroth7712/PythonMiniProject
 	$ cd PythonMiniProject
 ```
-### Installing pip & pygame
+#### Installing pip & pygame
 ```
 	$ sudo apt-get install -y python3-pip
 	$ pip3 install pygame --user
