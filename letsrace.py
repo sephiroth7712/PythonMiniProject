@@ -20,7 +20,8 @@ gameDisplay=pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("Lets Race")
 clock=pygame.time.Clock()
 
-CarImg=pygame.image.load("Racecar.png")
+CarA=pygame.image.load("car1.jpeg")
+CarB=pygame.image.load("car2.jpeg")
 
 def get_high_score():
     # Default high score
@@ -62,10 +63,10 @@ def things_dodged(count):
     gameDisplay.blit(highScore,(20,50))
 
 def car1(x,y):
-    gameDisplay.blit(CarImg,(x,y))
+    gameDisplay.blit(CarA,(x,y))
 
 def car2(x,y):
-    gameDisplay.blit(CarImg,(x,y))
+    gameDisplay.blit(CarB,(x,y))
 
 
 def things(thingx,thingy,thingw,thingh,color):
@@ -171,7 +172,6 @@ def game_loop():
 
         gameDisplay.fill(white)
 
-        #things(thingx,thingy,thingw,thingh,color)
         things(thing_startx,thing_starty,thing_width,thing_height,black)
         thing_starty+=thing_speed
         car1(x,y)
