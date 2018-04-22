@@ -162,6 +162,9 @@ def game_loop():
             if ((x>thing_startx and x<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)) or ((x+car_width>thing_startx and x+car_width<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)):
                 print('x crossover')
                 crash()
+            elif ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
+                print('x crossover')
+                crash()
 
         pygame.display.update()
         clock.tick(60)
