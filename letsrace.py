@@ -114,9 +114,9 @@ def game_loop():
 
     thing_startx=random.randrange(0,display_width)
     thing_starty=-600
-    thing_speed=9
-    thing_width=100
-    thing_height=100
+    thing_speed=10
+    thing_width=60
+    thing_height=60
 
     dodged=0
 
@@ -207,11 +207,12 @@ def game_loop():
             if ((x>thing_startx and x<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)) or ((x+car_width>thing_startx and x+car_width<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)):
                 print('x crossover')
                 crash1()
-	if y2<thing_starty+thing_height:
+        if y2<thing_starty+thing_height:
             print('y crossover')
-	    if ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
-                print('x2 crossover')
+            if ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
+                print('x crossover')
                 crash2()
+            
         
 
         pygame.display.update()
