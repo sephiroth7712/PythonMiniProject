@@ -90,8 +90,15 @@ def message_display(text):
 
     game_loop()
 
-def crash():
-    message_display('You Crashed')
+
+def crash1():
+    message_display('Player1Crashed')
+
+def crash2():
+    message_display('PLayer2Crashed')
+
+def crash3():
+	message_display('Collision')
 
 def game_loop():
     y_change=0
@@ -108,9 +115,9 @@ def game_loop():
 
     thing_startx=random.randrange(0,display_width)
     thing_starty=-600
-    thing_speed=9
-    thing_width=100
-    thing_height=100
+    thing_speed=10
+    thing_width=60
+    thing_height=60
 
     dodged=0
 
@@ -150,11 +157,12 @@ def game_loop():
                     y2_change=8
 
             if event.type==pygame.KEYUP:
-                if event.key==pygame.K_d or event.key==pygame.K_a or event.key==pygame.K_s or event.key==pygame.K_w or event.key==pygame.K_LEFT or event.key==pygame.K_RIGHT or event.key==pygame.K_UP or event.key==pygame.K_DOWN:
-                    x_change=0
-                    y_change=0
+                if event.key==pygame.K_LEFT or event.key==pygame.K_RIGHT or event.key==pygame.K_UP or event.key==pygame.K_DOWN:
                     x2_change=0
                     y2_change=0
+                if event.key==pygame.K_d or event.key==pygame.K_a or event.key==pygame.K_s or event.key==pygame.K_w:
+                    x_change=0
+                    y_change=0
 
         x+=x_change
         if y+y_change>=display_height*0.79:
@@ -178,6 +186,10 @@ def game_loop():
         car2(x2,y2)
         things_dodged(dodged)
 
+        if ((x+car_width>x2 and x<x2+car_width) and (y-125<y2 and y>y2-125)):
+            print('Collide')
+            crash3()
+
         if x>display_width-car_width or x<0:
             crash()
         if x2>display_width-car_width or x2<0:
@@ -187,8 +199,9 @@ def game_loop():
             thing_starty=0-thing_height
             thing_startx=random.randrange(0,display_width)
             dodged+=1
-            if thing_speed<15:
-                thing_speed+=0.25
+            
+        if thing_speed<18:
+            thing_speed+=0.3
 
         if y<thing_starty+thing_height:
             print('y crossover')
@@ -196,9 +209,11 @@ def game_loop():
             if ((x>thing_startx and x<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)) or ((x+car_width>thing_startx and x+car_width<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)):
                 print('x crossover')
                 crash()
+                
             elif ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
                 print('x crossover')
                 crash()
+                crash1()
 
         pygame.display.update()
         clock.tick(60)
