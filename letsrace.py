@@ -4,8 +4,8 @@ import random
 
 pygame.init()
 
-display_width=800
-display_height=600
+display_width=1280
+display_height=720
 
 black=(0,0,0)
 white=(255,255,255)
@@ -15,6 +15,8 @@ blue=(0,0,255)
 brown=(165,42,42)
 
 car_width=60
+
+
 
 gameDisplay=pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption("Lets Race")
@@ -32,7 +34,7 @@ def get_high_score():
         high_score_file = open("high_score.txt", "r")
         high_score = int(high_score_file.read())
         high_score_file.close()
-        print("The high score is", high_score)
+        # print("The high score is", high_score)
     except IOError:
         # Error reading file, no high score
         print("There is no high score yet.")
@@ -81,25 +83,49 @@ def text_objects(text,font):
 def message_display(text):
     largeText=pygame.font.Font('freesansbold.ttf',115)
     TextSurf, TextRect=text_objects(text, largeText)
-    TextRect.center=((display_width/2),(display_height/2))
+    TextRect.center=((display_width/2),(display_height/3))
+    gameDisplay.blit(TextSurf, TextRect)
+
+    pygame.display.update()
+
+    time.sleep(2)
+    game_loop()
+
+def message_display2(text):
+    largeText=pygame.font.Font('freesansbold.ttf',115)
+    TextSurf, TextRect=text_objects(text, largeText)
+    TextRect.center=((display_width/2),(display_height/3))
     gameDisplay.blit(TextSurf, TextRect)
 
     pygame.display.update()
 
     time.sleep(2)
 
-    game_loop()
-
-def crash1():
-    message_display('Player1Crashed')
-
-def crash2():
-    message_display('PLayer2Crashed')
+def crash(car):
+    message_display('Player'+car+'Crashed')
+    
 
 def crash3():
 	message_display('Collision')
 
+
 def game_loop():
+    thing_speed=0
+    gameDisplay.fill(white)
+    message_display2('Choose a difficulty 1.Easy 2.Medium 3.Hard')
+    while(thing_speed==0):
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                        pygame.quit()
+                        quit()
+            if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_1:
+                    thing_speed=4
+                elif event.key==pygame.K_2:
+                    thing_speed=9
+                elif event.key==pygame.K_3:
+                    thing_speed=14
+
     y_change=0
     y2_change=0
 
@@ -114,9 +140,8 @@ def game_loop():
 
     thing_startx=random.randrange(0,display_width)
     thing_starty=-600
-    thing_speed=9
-    thing_width=100
-    thing_height=100
+    thing_width=50
+    thing_height=50
 
     dodged=0
 
@@ -186,37 +211,37 @@ def game_loop():
         things_dodged(dodged)
 
         if ((x+car_width>x2 and x<x2+car_width) and (y-125<y2 and y>y2-125)):
-            print('Collide')
+            # print('Collide')
             crash3()
 
         if x>display_width-car_width or x<0:
-            crash1()
+            crash('1')
         if x2>display_width-car_width or x2<0:
-            crash2()
+            crash('2')
 
         if thing_starty>display_height:
             thing_starty=0-thing_height
             thing_startx=random.randrange(0,display_width)
             dodged+=1
-            if thing_speed<18:
+            if thing_speed<20:
                 thing_speed+=0.3
 
         if y<thing_starty+thing_height:
-            print('y crossover')
+            # print('y crossover')
 
             if ((x>thing_startx and x<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)) or ((x+car_width>thing_startx and x+car_width<thing_startx+thing_width) and (y>thing_starty and y<thing_starty+thing_height)):
-                print('x crossover')
-                crash1()
-	if y2<thing_starty+thing_height:
-            print('y crossover')
-	    if ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
-                print('x2 crossover')
-                crash2()
-        
+                # print('x crossover')
+                crash('1')
+        if y2<thing_starty+thing_height:
+            # print('y2 crossover')
+
+            if ((x2>thing_startx and x2<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)) or ((x2+car_width>thing_startx and x2+car_width<thing_startx+thing_width) and (y2>thing_starty and y2<thing_starty+thing_height)):
+                # print('x crossover')
+                crash('2')
 
         pygame.display.update()
         clock.tick(60)
-
+        
 game_loop()
 pygame.quit()
 quit()
