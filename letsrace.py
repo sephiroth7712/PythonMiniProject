@@ -24,9 +24,11 @@ gameDisplay=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 pygame.display.set_caption("Lets Race")
 clock=pygame.time.Clock()
-
-CarA=pygame.image.load("car1.jpeg")
-CarB=pygame.image.load("car2.jpeg")
+Car=[]
+Car.append(pygame.image.load("Car1.png"))
+Car.append(pygame.image.load("Car2.png"))
+Car.append(pygame.image.load("Car3.png"))
+Car.append(pygame.image.load("Car4.png"))
 
 def get_high_score():
     high_score = 0
@@ -58,9 +60,9 @@ def things_dodged(count):
     gameDisplay.blit(text,(20,20))
     gameDisplay.blit(highScore,(20,50))
 
-def car1(x,y):
-    gameDisplay.blit(CarA,(x,y))
-    return CarA.get_rect(x=x, y=y)
+def car1(car,x,y):
+    gameDisplay.blit(car,(x,y))
+    return car.get_rect(x=x, y=y)
 
 def car2(x,y):
     gameDisplay.blit(CarB,(x,y))
@@ -101,10 +103,50 @@ def crash(car):
 def crash3():
 	message_display('Collision')
 
-def game_loop():   
-    max_nob = 5
+def game_loop(): 
+    controls=[[pygame.K_w,pygame.K_a,pygame.K_s,pygame.K_d],[pygame.K_UP,pygame.K_LEFT,pygame.K_DOWN,pygame.K_RIGHT],[pygame.K_i,pygame.K_j,pygame.K_k,pygame.K_l],[pygame.K_KP8,pygame.K_KP4,pygame.K_KP5,pygame.K_KP6]]  
+    max_nob = 10
+    max_players=4
     starting_speed=0
+    number_of_players=0
     gameDisplay.fill(white)
+    message_display2('Enter number of players 1-4')
+    while(number_of_players==0 or number_of_players>4):
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                        pygame.quit()
+                        quit()
+            if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_1:
+                    number_of_players=1
+                elif event.key==pygame.K_2:
+                    number_of_players=2
+                elif event.key==pygame.K_3:
+                    number_of_players=3
+                elif event.key==pygame.K_4:
+                    number_of_players=4
+                elif event.key == pygame.K_5:
+                    pygame.quit()
+                    quit()
+    gameDisplay.fill(white)
+    y_change=[0]*number_of_players
+    x_change=[0]*number_of_players
+    car_controls=[[0]*4]*number_of_players
+    if(number_of_players==1):
+        car_controls[0]=controls[1]
+    elif(number_of_players==2):
+        car_controls[0]=controls[0]
+        car_controls[1]=controls[1]
+    elif(number_of_players==3):
+        car_controls[0]=controls[0]
+        car_controls[1]=controls[2]
+        car_controls[2]=controls[1]
+    elif(number_of_players==4):
+        car_controls[0]=controls[0]
+        car_controls[1]=controls[2]
+        car_controls[2]=controls[1]
+        car_controls[3]=controls[3]
+
     message_display2('Choose a difficulty 1.Easy 2.Medium 3.Hard')
     while(starting_speed==0):
         for event in pygame.event.get():
@@ -121,18 +163,17 @@ def game_loop():
                 elif event.key == pygame.K_4:
                     pygame.quit()
                     quit()
+    dividing_factor = 1/(2*number_of_players)
     thing_speed=[starting_speed]*max_nob
-    y_change=0
-    y2_change=0
 
-    x=(display_width*0.48/2)
-    y=(display_height*0.79)
+    x=[0.0]*number_of_players
+    y=[(display_height*0.79)]*number_of_players
+    for i in range(0,number_of_players):
+        if i==0:
+            x[i]=display_width*dividing_factor
+        else:
+            x[i]=x[i-1]+2*display_width*dividing_factor
 
-    x2=(display_width*0.48*1.5)
-    y2=(display_height*0.79)
-
-    x_change=0
-    x2_change=0
 
     thing_startx = [0]*max_nob
     for i in range(0,max_nob):
@@ -145,81 +186,71 @@ def game_loop():
 
     gameExit=False
     nob=1
+    keypressed=[0]*number_of_players
     while not gameExit:
-
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 pygame.quit()
                 quit()
-
-            if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_a:
-                    x_change=-8
-                    y_change=0
-                elif event.key==pygame.K_d:
-                    x_change=8
-                    y_change=0
-                elif event.key==pygame.K_w:
-                    x_change=0
-                    y_change=-8
-                elif event.key==pygame.K_s:
-                    x_change=-0
-                    y_change=8
-                if event.key==pygame.K_LEFT:
-                    x2_change=-8
-                    y2_change=0
-                elif event.key==pygame.K_RIGHT:
-                    x2_change=8
-                    y2_change=0
-                elif event.key==pygame.K_UP:
-                    x2_change=0
-                    y2_change=-8
-                elif event.key==pygame.K_DOWN:
-                    x2_change=-0
-                    y2_change=8
-                elif event.key == pygame.K_CAPSLOCK:
+            if event.type==pygame.KEYDOWN:  
+                for i in range(0,number_of_players):
+                    if event.key in car_controls[i]:
+                        if event.key==car_controls[i][0]:
+                            x_change[i]=0
+                            y_change[i]=-8
+                            keypressed[i]=event.key
+                        elif event.key==car_controls[i][1]:
+                            x_change[i]=-8
+                            y_change[i]=0
+                            keypressed[i]=event.key
+                        elif event.key==car_controls[i][2]:
+                            x_change[i]=0
+                            y_change[i]=8
+                            keypressed[i]=event.key
+                        elif event.key==car_controls[i][3]:
+                            x_change[i]=8
+                            y_change[i]=0
+                            keypressed[i]=event.key
+                if event.key == pygame.K_CAPSLOCK:
                     pygame.quit()
                     quit()
 
             if event.type==pygame.KEYUP:
-                if event.key==pygame.K_LEFT or event.key==pygame.K_RIGHT or event.key==pygame.K_UP or event.key==pygame.K_DOWN:
-                    x2_change=0
-                    y2_change=0
-                if event.key==pygame.K_d or event.key==pygame.K_a or event.key==pygame.K_s or event.key==pygame.K_w:
-                    x_change=0
-                    y_change=0
+                for i in range(0,number_of_players):
+                    if event.key==keypressed[i]:
+                        x_change[i]=0
+                        y_change[i]=0
 
-        x+=x_change
-        if y+y_change>=display_height*0.79:
-            y_change=0
-        elif y+y_change<=0:
-        	y_change=0
-        y+=y_change
 
-        x2+=x2_change
-        if y2+y2_change>=display_height*0.79:
-            y2_change=0
-        elif y2+y2_change<=0:
-        	y2_change=0
-        y2+=y2_change
-
+        for i in range(0,number_of_players):          
+            if y[i]+y_change[i]>=display_height:
+                y[i]=0
+            elif y[i]+y_change[i]<=0:
+                y[i]=display_height
+            y[i]+=y_change[i]
+            if x[i]+x_change[i]>display_width:
+                x[i]=0
+            elif x[i]+x_change[i]<0:
+                x[i]=display_width
+            x[i]+=x_change[i]
         gameDisplay.fill(white)
-        
+
         for i in range(0,nob):
             things(thing_startx[i],thing_starty[i],thing_width[i],thing_height[i],black)
             thing_starty[i]+=thing_speed[i]
+        cars=[0]*number_of_players
+        for i in range(0,number_of_players):
+            cars[i]=car1(Car[i],x[i],y[i])
 
-        car_1 = car1(x,y)
-        car_2 = car2(x2,y2)
         things_dodged(dodged)
 
-        if car_1.colliderect(car_2):
-            crash3()
+        for i in range(0,len(cars)):
+            for j in range(i+1,len(cars)):
+                if cars[i].colliderect(cars[j]):
+                    crash3()
 
-        if x>display_width-car_width or x<0:
-            crash('1')
-        if x2>display_width-car_width or x2<0:
-            crash('2')
+
+        
         
         for i in range(0,nob):
             if thing_starty[i]>display_height:
@@ -228,13 +259,11 @@ def game_loop():
                 dodged+=1
                 thing_speed[i]+=0.3
             rect  = pygame.rect.Rect(thing_startx[i],thing_starty[i],thing_width[i],thing_height[i])
-            if car_1.colliderect(rect):
-                crash('1')
-                break
-            if car_2.colliderect(rect):
-                crash('2')
-                break
-        nob  = min(5,max(1,int(math.ceil(dodged/10))))
+            for j in range(0,number_of_players):
+                if cars[j].colliderect(rect):
+                    crash(str(j+1))
+                    break
+        nob  = min(10,max(1,int(math.ceil(dodged/10))))
 
         pygame.display.update()
         clock.tick(60)
