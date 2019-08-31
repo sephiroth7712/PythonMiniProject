@@ -4,8 +4,11 @@ import random
 from screeninfo import get_monitors
 import math
 import json
+from os import path
 
 pygame.init()
+
+gameDisplay=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 SONG_FINISHED = pygame.USEREVENT + 1
 
@@ -14,11 +17,8 @@ pygame.mixer.music.set_endevent(SONG_FINISHED)
 crash_sound = pygame.mixer.Sound("car_crash.wav")
 
 
-
-
 display_width=get_monitors()[0].width
 display_height=get_monitors()[0].height
-
 
 
 black=(0,0,0)
@@ -29,9 +29,6 @@ blue=(0,0,255)
 brown=(165,42,42)
 
 car_width=60
-
-
-gameDisplay=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 background = pygame.image.load('road.jpg').convert()
 background = pygame.transform.scale(background, (display_width, display_height))
@@ -97,13 +94,27 @@ def message_display(text):
     game_loop()
 
 def message_display2(text):
-    largeText=pygame.font.Font('freesansbold.ttf',75)
-    TextSurf, TextRect=text_objects(text, largeText)
-    TextRect.center=((display_width/2),(display_height/3))
-    gameDisplay.blit(TextSurf, TextRect)
-
+    largeText=pygame.font.SysFont('Arial', 75)
+    # TextSurf, TextRect=text_objects(text, largeText)
+    # TextRect.center=((display_width/2),(display_height/3))
+    # gameDisplay.blit(TextSurf, TextRect)
+    pos=(20,20)
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = largeText.size(' ')[0]  # The width of a space.
+    max_width, max_height = gameDisplay.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = largeText.render(word, 0, red)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            gameDisplay.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
     pygame.display.update()
-
     time.sleep(2)
 
 def crash():
@@ -161,7 +172,7 @@ def game_loop():
         car_controls[3]=controls[3]
 
     difficulty=""
-    message_display2('Choose a difficulty 1.Easy 2.Medium 3.Hard')
+    message_display2('Choose a difficulty \n1.Easy \n2.Medium \n3.Hard')
     while(starting_speed==0):
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
