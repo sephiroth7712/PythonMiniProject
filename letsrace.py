@@ -13,6 +13,7 @@ soundtracks=['soundtrack1.wav','soundtrack2.wav']
 pygame.mixer.music.set_endevent(SONG_FINISHED)
 crash_sound = pygame.mixer.Sound("car_crash.wav")
 
+
 display_width=get_monitors()[0].width
 display_height=get_monitors()[0].height
 
@@ -108,6 +109,8 @@ def crash3():
 	message_display('Collision')
 
 def game_loop(): 
+    pygame.mixer.music.load('main_menu.wav')
+    pygame.mixer.music.play(0)
     song_idx=0
     controls=[[pygame.K_w,pygame.K_a,pygame.K_s,pygame.K_d],[pygame.K_UP,pygame.K_LEFT,pygame.K_DOWN,pygame.K_RIGHT],[pygame.K_i,pygame.K_j,pygame.K_k,pygame.K_l],[pygame.K_KP8,pygame.K_KP4,pygame.K_KP5,pygame.K_KP6]]  
     max_nob = 10
@@ -196,6 +199,7 @@ def game_loop():
     gameExit=False
     nob=1
     keypressed=[0]*number_of_players
+    pygame.mixer.music.stop()
     pygame.mixer.music.load(soundtracks[song_idx])
     pygame.mixer.music.play(0)
     while not gameExit:
