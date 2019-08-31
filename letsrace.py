@@ -14,8 +14,12 @@ pygame.mixer.music.set_endevent(SONG_FINISHED)
 crash_sound = pygame.mixer.Sound("car_crash.wav")
 
 
+
+
 display_width=get_monitors()[0].width
 display_height=get_monitors()[0].height
+
+
 
 black=(0,0,0)
 white=(255,255,255)
@@ -29,13 +33,16 @@ car_width=60
 
 gameDisplay=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
+background = pygame.image.load('road.jpg').convert()
+background = pygame.transform.scale(background, (display_width, display_height))
+
 pygame.display.set_caption("Lets Race")
 clock=pygame.time.Clock()
 Car=[]
-Car.append(pygame.image.load("Car1.png"))
-Car.append(pygame.image.load("Car2.png"))
-Car.append(pygame.image.load("Car3.png"))
-Car.append(pygame.image.load("Car4.png"))
+Car.append(pygame.image.load("Car1.png").convert_alpha())
+Car.append(pygame.image.load("Car2.png").convert_alpha())
+Car.append(pygame.image.load("Car3.png").convert_alpha())
+Car.append(pygame.image.load("Car4.png").convert_alpha())
 
 def get_high_score():
     high_scores=0
@@ -99,10 +106,8 @@ def message_display2(text):
 
     time.sleep(2)
 
-def crash(car):
-    pygame.mixer.Sound.play(crash_sound)
-    pygame.mixer.music.stop()
-    message_display('Player '+car+'Crashed')
+def crash():
+    message_display('Game Over')
     
 
 def crash3():
@@ -110,7 +115,7 @@ def crash3():
 
 def game_loop(): 
     pygame.mixer.music.load('main_menu.wav')
-    pygame.mixer.music.play(0)
+    pygame.mixer.music.play(-1)
     song_idx=0
     controls=[[pygame.K_w,pygame.K_a,pygame.K_s,pygame.K_d],[pygame.K_UP,pygame.K_LEFT,pygame.K_DOWN,pygame.K_RIGHT],[pygame.K_i,pygame.K_j,pygame.K_k,pygame.K_l],[pygame.K_KP8,pygame.K_KP4,pygame.K_KP5,pygame.K_KP6]]  
     max_nob = 10
@@ -200,8 +205,20 @@ def game_loop():
     nob=1
     keypressed=[0]*number_of_players
     pygame.mixer.music.stop()
+
+
+    background_size = background.get_size()
+    background_rect = background.get_rect()
+
+    w,h = background_size
+    back_x = 0
+    back_y = 0
+
+    back_x1 = 0
+    back_y1 = -h
     pygame.mixer.music.load(soundtracks[song_idx])
     pygame.mixer.music.play(0)
+    alive = [True]*number_of_players
     while not gameExit:
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
@@ -209,6 +226,8 @@ def game_loop():
                 quit()
             if event.type==pygame.KEYDOWN:  
                 for i in range(0,number_of_players):
+                    if(alive[i]==False):
+                        continue
                     if event.key in car_controls[i]:
                         if event.key==car_controls[i][0]:
                             x_change[i]=0
@@ -232,6 +251,8 @@ def game_loop():
 
             if event.type==pygame.KEYUP:
                 for i in range(0,number_of_players):
+                    if(alive[i]==False):
+                        continue
                     if event.key==keypressed[i]:
                         x_change[i]=0
                         y_change[i]=0
@@ -243,7 +264,9 @@ def game_loop():
                 pygame.mixer.music.play(0)
 
 
-        for i in range(0,number_of_players):          
+        for i in range(0,number_of_players):  
+            if(alive[i]==False):
+                continue        
             if y[i]+y_change[i]>=display_height:
                 y[i]=0
             elif y[i]+y_change[i]<=0:
@@ -254,23 +277,39 @@ def game_loop():
             elif x[i]+x_change[i]<0:
                 x[i]=display_width
             x[i]+=x_change[i]
-        gameDisplay.fill(white)
-
-        
+        # gameDisplay.fill(white)
+        back_y1 += thing_speed[0]
+        back_y += thing_speed[0]
+        gameDisplay.blit(background,(back_x,back_y))
+        gameDisplay.blit(background,(back_x1,back_y1))
+        if back_y > h:
+            back_y = -h
+        if back_y1 > h:
+            back_y1 = -h
+            
 
         for i in range(0,nob):
             things(thing_startx[i],thing_starty[i],thing_width[i],thing_height[i],black)
             thing_starty[i]+=thing_speed[i]
         cars=[0]*number_of_players
+
         for i in range(0,number_of_players):
+            if(alive[i]==False):
+                continue
             cars[i]=car1(Car[i],x[i],y[i])
 
         things_dodged(dodged,number_of_players,difficulty)
 
         for i in range(0,len(cars)):
+            if(alive[i]==False):
+                continue
             for j in range(i+1,len(cars)):
+                if(alive[j]==False):
+                    continue
                 if cars[i].colliderect(cars[j]):
-                    crash3()
+                    pygame.mixer.Sound.play(crash_sound)
+                    alive[i]=False
+                    alive[j]=False
 
 
         
@@ -283,13 +322,20 @@ def game_loop():
                 thing_speed[i]+=0.1
             rect  = pygame.rect.Rect(thing_startx[i],thing_starty[i],thing_width[i],thing_height[i])
             for j in range(0,number_of_players):
+                if(alive[j]==False):
+                    continue
                 if cars[j].colliderect(rect):
-                    crash(str(j+1))
+                    alive[j]=False
+                    pygame.mixer.Sound.play(crash_sound)
+                    # crash(str(j+1))
                     break
         nob  = min(10,max(1,int(math.ceil(dodged/10))))
-
+        if(alive.count(True)==0):
+            pygame.mixer.music.stop()
+            crash()
         pygame.display.update()
-        clock.tick(60)
+        # print(clock.get_fps())
+        clock.tick(75)
         
 game_loop()
 pygame.quit()
