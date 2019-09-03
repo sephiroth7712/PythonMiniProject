@@ -93,12 +93,12 @@ def message_display(text):
     time.sleep(2)
     game_loop()
 
-def message_display2(text):
-    largeText=pygame.font.SysFont('Arial', 75)
+def message_display2(text,myFont = 75, xpos = 20, ypos = 20):
+    largeText=pygame.font.SysFont('Arial', myFont)
     # TextSurf, TextRect=text_objects(text, largeText)
     # TextRect.center=((display_width/2),(display_height/3))
     # gameDisplay.blit(TextSurf, TextRect)
-    pos=(20,20)
+    pos=(xpos,ypos)
     words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
     space = largeText.size(' ')[0]  # The width of a space.
     max_width, max_height = gameDisplay.get_size()
@@ -118,7 +118,7 @@ def message_display2(text):
     time.sleep(2)
 
 def crash():
-    message_display('Game Over')
+    message_display2('F\nGame Over',72,display_width/2,display_height/2)
     
 
 def crash3():
@@ -135,6 +135,7 @@ def game_loop():
     number_of_players=0
     gameDisplay.fill(white)
     message_display2('Enter number of players 1-4')
+    message_display2('Press Esc to Exit',50,20,120)
     while(number_of_players==0 or number_of_players>4):
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
@@ -149,7 +150,7 @@ def game_loop():
                     number_of_players=3
                 elif event.key==pygame.K_4:
                     number_of_players=4
-                elif event.key == pygame.K_5:
+                elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     quit()
     gameDisplay.fill(white)
@@ -188,7 +189,7 @@ def game_loop():
                 elif event.key==pygame.K_3:
                     difficulty="hard"
                     starting_speed=14
-                elif event.key == pygame.K_4:
+                elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     quit()
     dividing_factor = 1/(2*number_of_players)
@@ -256,7 +257,7 @@ def game_loop():
                             x_change[i]=8
                             y_change[i]=0
                             keypressed[i]=event.key
-                if event.key == pygame.K_CAPSLOCK:
+                if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     quit()
 

@@ -15,6 +15,7 @@ A racing game which uses the module pygame
 ```
 	$ sudo apt-get install -y python3-pip
 	$ pip3 install pygame --user
+	$ pip3 install screeninfo --user
 ```
   
 ## Playing The Game<a name="running"></a>
