@@ -1,10 +1,9 @@
 import pygame
 import time
 import random
-from screeninfo import get_monitors
-import math
 import json
-from os import path
+from screeninfo import get_monitors
+from math import ceil
 
 pygame.init()
 
@@ -341,7 +340,7 @@ def game_loop():
                     pygame.mixer.Sound.play(crash_sound)
                     # crash(str(j+1))
                     break
-        nob  = min(10,max(1,int(math.ceil(dodged/10))))
+        nob  = min(10,max(1,int(ceil(dodged/10))))
         if(alive.count(True)==0):
             pygame.mixer.music.stop()
             crash()
