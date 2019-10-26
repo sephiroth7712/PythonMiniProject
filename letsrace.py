@@ -12,9 +12,9 @@ gameDisplay=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 SONG_FINISHED = pygame.USEREVENT + 1
 
-soundtracks=['soundtrack1.wav','soundtrack2.wav']
+soundtracks=['./media/soundtrack_rock.wav','./media/soundtrack_edm.wav']
 pygame.mixer.music.set_endevent(SONG_FINISHED)
-crash_sound = pygame.mixer.Sound("car_crash.wav")
+crash_sound = pygame.mixer.Sound("./media/car_crash.wav")
 
 
 display_width=get_monitors()[0].width
@@ -30,21 +30,21 @@ brown=(165,42,42)
 
 car_width=60
 
-background = pygame.image.load('road.jpg').convert()
+background = pygame.image.load('./models/roadtrack.jpg').convert()
 background = pygame.transform.scale(background, (display_width, display_height))
 
 pygame.display.set_caption("Lets Race")
 clock=pygame.time.Clock()
 Car=[]
-Car.append(pygame.image.load("Car1.png").convert_alpha())
-Car.append(pygame.image.load("Car2.png").convert_alpha())
-Car.append(pygame.image.load("Car3.png").convert_alpha())
-Car.append(pygame.image.load("Car4.png").convert_alpha())
+Car.append(pygame.image.load("./models/car_red.png").convert_alpha())
+Car.append(pygame.image.load("./models/car_orange.png").convert_alpha())
+Car.append(pygame.image.load("./models/car_black_stripes.png").convert_alpha())
+Car.append(pygame.image.load("./models/car_black.png").convert_alpha())
 
 def get_high_score():
     high_scores=0
-    try: 
-        with open('high_score.json','r') as f:
+    try:
+        with open('./cfg/high_score.json','r') as f:
             high_scores= json.load(f)
             f.close()
     except IOError:
@@ -55,7 +55,7 @@ def get_high_score():
 
 def save_high_score(new_high_score):
     try:
-        with open("high_score.json","w") as f:
+        with open("./cfg/high_score.json","w") as f:
             f.write(json.dumps(new_high_score))
             f.close()
     except IOError:
@@ -119,16 +119,16 @@ def message_display2(text,myFont = 75, xpos = 20, ypos = 20):
 
 def crash():
     message_display2('F\nGame Over',72,display_width/2,display_height/2)
-    
+
 
 def crash3():
 	message_display('Collision')
 
-def game_loop(): 
-    pygame.mixer.music.load('main_menu.wav')
+def game_loop():
+    pygame.mixer.music.load('./media/main_menu.wav')
     pygame.mixer.music.play(-1)
     song_idx=0
-    controls=[[pygame.K_w,pygame.K_a,pygame.K_s,pygame.K_d],[pygame.K_UP,pygame.K_LEFT,pygame.K_DOWN,pygame.K_RIGHT],[pygame.K_i,pygame.K_j,pygame.K_k,pygame.K_l],[pygame.K_KP8,pygame.K_KP4,pygame.K_KP5,pygame.K_KP6]]  
+    controls=[[pygame.K_w,pygame.K_a,pygame.K_s,pygame.K_d],[pygame.K_UP,pygame.K_LEFT,pygame.K_DOWN,pygame.K_RIGHT],[pygame.K_i,pygame.K_j,pygame.K_k,pygame.K_l],[pygame.K_KP8,pygame.K_KP4,pygame.K_KP5,pygame.K_KP6]]
     max_nob = 10
     max_players=4
     starting_speed=0
@@ -236,7 +236,7 @@ def game_loop():
             if event.type==pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type==pygame.KEYDOWN:  
+            if event.type==pygame.KEYDOWN:
                 for i in range(0,number_of_players):
                     if(alive[i]==False):
                         continue
@@ -276,9 +276,9 @@ def game_loop():
                 pygame.mixer.music.play(0)
 
 
-        for i in range(0,number_of_players):  
+        for i in range(0,number_of_players):
             if(alive[i]==False):
-                continue        
+                continue
             if y[i]+y_change[i]>=display_height:
                 y[i]=0
             elif y[i]+y_change[i]<=0:
@@ -298,7 +298,7 @@ def game_loop():
             back_y = -h
         if back_y1 > h:
             back_y1 = -h
-            
+
 
         for i in range(0,nob):
             things(thing_startx[i],thing_starty[i],thing_width[i],thing_height[i],black)
@@ -324,8 +324,8 @@ def game_loop():
                     alive[j]=False
 
 
-        
-        
+
+
         for i in range(0,nob):
             if thing_starty[i]>display_height:
                 thing_starty[i]=0-thing_height[i]
@@ -348,7 +348,7 @@ def game_loop():
         pygame.display.update()
         # print(clock.get_fps())
         clock.tick(75)
-        
+
 game_loop()
 pygame.quit()
 quit()
