@@ -1,1 +1,22 @@
-{"1": {"easy": 712, "medium": 0, "hard": 382}, "2": {"easy": 105, "medium": 0, "hard": 92}, "3": {"easy": 89, "medium": 0, "hard": 40}, "4": {"easy": 0, "medium": 0, "hard": 44}}
+{
+    "1": {
+        "easy": 0,
+        "hard": 0,
+        "medium": 0
+    },
+    "2": {
+        "easy": 0,
+        "hard": 0,
+        "medium": 0
+    },
+    "3": {
+        "easy": 0,
+        "hard": 0,
+        "medium": 0
+    },
+    "4": {
+        "easy": 0,
+        "hard": 0,
+        "medium": 0
+    }
+}
